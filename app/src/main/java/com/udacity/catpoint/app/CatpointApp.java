@@ -1,5 +1,7 @@
 package com.udacity.catpoint.app;
 
+/*import com.udacity.catpoint.app.application.CatpointGui;*/
+
 import com.udacity.catpoint.app.application.CatpointGui;
 
 /**

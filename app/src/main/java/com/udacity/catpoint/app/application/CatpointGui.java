@@ -1,10 +1,12 @@
 package com.udacity.catpoint.app.application;
 
-import com.udacity.catpoint.image.service.FakeImageService;
-import com.udacity.catpoint.image.service.ImageService;
-import com.udacity.catpoint.security.data.SecurityRepository;
-import com.udacity.catpoint.security.data.PretendDatabaseSecurityRepositoryImpl;
-import com.udacity.catpoint.security.service.SecurityService;
+import com.udacity.catpoint.app.application.ControlPanel;
+import com.udacity.catpoint.app.application.DisplayPanel;
+import com.udacity.catpoint.app.application.ImagePanel;
+import com.udacity.catpoint.app.application.SensorPanel;
+import com.udacity.catpoint.image.service.*;
+import com.udacity.catpoint.security.data.*;
+import com.udacity.catpoint.security.service.*;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -16,6 +18,13 @@ import javax.swing.*;
  * all our dependencies and providing them to other classes as necessary.
  */
 public class CatpointGui extends JFrame {
+    private SecurityRepository securityRepository = new PretendDatabaseSecurityRepositoryImpl();
+    private ImageService imageService = new FakeImageService();
+    private SecurityService securityService = new SecurityService(securityRepository, imageService);
+    private DisplayPanel displayPanel = new DisplayPanel(securityService);
+    private SensorPanel sensorPanel = new SensorPanel(securityService);
+    private ControlPanel controlPanel = new ControlPanel(securityService, sensorPanel);
+    private ImagePanel imagePanel = new ImagePanel(securityService);
 
     public CatpointGui() {
         setLocation(100, 100);
@@ -25,16 +34,9 @@ public class CatpointGui extends JFrame {
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new MigLayout());
-        ImageService imageService = new FakeImageService();
-        SecurityRepository securityRepository = new PretendDatabaseSecurityRepositoryImpl();
-        SecurityService securityService = new SecurityService(securityRepository, imageService);
-        DisplayPanel displayPanel = new DisplayPanel(securityService);
         mainPanel.add(displayPanel, "wrap");
-        ImagePanel imagePanel = new ImagePanel(securityService);
         mainPanel.add(imagePanel, "wrap");
-        ControlPanel controlPanel = new ControlPanel(securityService);
         mainPanel.add(controlPanel, "wrap");
-        SensorPanel sensorPanel = new SensorPanel(securityService);
         mainPanel.add(sensorPanel);
 
         getContentPane().add(mainPanel);

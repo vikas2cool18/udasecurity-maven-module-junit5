@@ -1,7 +1,9 @@
 package com.udacity.catpoint.app.application;
 
-import com.udacity.catpoint.security.service.SecurityService;
+import com.udacity.catpoint.app.application.SensorPanel;
+import com.udacity.catpoint.app.service.StyleService;
 import com.udacity.catpoint.security.data.ArmingStatus;
+import com.udacity.catpoint.security.service.SecurityService;
 import com.udacity.catpoint.app.service.StyleService;
 import net.miginfocom.swing.MigLayout;
 
@@ -16,13 +18,15 @@ import java.util.stream.Collectors;
 public class ControlPanel extends JPanel {
 
     private SecurityService securityService;
+    private SensorPanel sensorPanel;
     private Map<ArmingStatus, JButton> buttonMap;
 
 
-    public ControlPanel(SecurityService securityService) {
+    public ControlPanel(SecurityService securityService, SensorPanel sensorPanel) {
         super();
         setLayout(new MigLayout());
         this.securityService = securityService;
+        this.sensorPanel = sensorPanel;
 
         JLabel panelLabel = new JLabel("System Control");
         panelLabel.setFont(StyleService.HEADING_FONT);
@@ -38,6 +42,8 @@ public class ControlPanel extends JPanel {
             v.addActionListener(e -> {
                 securityService.setArmingStatus(k);
                 buttonMap.forEach((status, button) -> button.setBackground(status == k ? status.getColor() : null));
+                sensorPanel.updateSensorList(sensorPanel.getSensorListPanel());
+                System.out.println("**** Arming Button ****");
             });
         });
 
@@ -46,5 +52,7 @@ public class ControlPanel extends JPanel {
 
         ArmingStatus currentStatus = securityService.getArmingStatus();
         buttonMap.get(currentStatus).setBackground(currentStatus.getColor());
+
+
     }
 }
